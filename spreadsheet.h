@@ -29,16 +29,16 @@ class Spreadsheet;
 */
 class Line
 {
+public:
     friend class Spreadsheet;
     using iterator = std::vector<cell>::iterator;
     using const_iterator = std::vector<cell>::const_iterator;
 
-
     Line(cell const& raw)
     {
-      std::istringstream ss{raw};
-      cell c;
-      while(std::getline(ss, c, ',')) cells.push_back(c);
+        std::istringstream ss{raw};
+        cell c;
+        while(std::getline(ss, c, ',')) cells.push_back(c);
     }
 
     cell to_raw() const
@@ -61,6 +61,8 @@ class Line
     iterator       end()    { return std::end(cells);    }
     const_iterator cbegin() { return std::cbegin(cells); }
     const_iterator cend()   { return std::cend(cells);   }
+
+    cell operator[] (std::ptrdiff_t off) { return cells[off]; }
 
 
 private:
