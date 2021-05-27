@@ -12,20 +12,25 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <string_view>
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+
+using cell = std::string;
+class Spreadsheet;
 
 /*
     Line
 
     Represents the interface for a line in the spreadsheet
 */
-using cell = std::string;
-class Spreadsheet;
 class Line
 {
     friend class Spreadsheet;
+    using iterator = std::vector<cell>::iterator;
+    using const_iterator = std::vector<cell>::const_iterator;
+
 
     Line(cell const& raw)
     {
@@ -34,11 +39,27 @@ class Line
       while(std::getline(ss, c, ',')) cells.push_back(c);
     }
 
+    cell to_raw() const
+    {
+        std::ostringstream ss;
+        std::copy(std::begin(cells), std::end(cells), std::ostream_iterator<cell>(ss, ","));
+        auto val = ss.str();
+        val.pop_back();
+        return val;
+    }
+
     friend std::ostream& operator<<(std::ostream& os, Line const& l)
     {
-        std::copy(std::begin(l.cells), std::end(l.cells), std::ostream_iterator<cell>(os, " "));
+        std::copy(std::begin(l.cells), std::end(l.cells), std::ostream_iterator<cell>(os, "-"));
         return os;
     }
+
+    //Iterator methods for range-based for
+    iterator       begin()  { return std::begin(cells);  }
+    iterator       end()    { return std::end(cells);    }
+    const_iterator cbegin() { return std::cbegin(cells); }
+    const_iterator cend()   { return std::cend(cells);   }
+
 
 private:
     std::vector<cell> cells{};
@@ -52,9 +73,13 @@ private:
 class Spreadsheet
 {
 public:
-    Spreadsheet()
+
+    using iterator = std::vector<Line>::iterator;
+    using const_iterator = std::vector<Line>::const_iterator;
+
+    Spreadsheet(std::string_view in) : infile{in.data()}
     {
-        if(!infile || !outfile) return;
+        if(!infile) return;
 
         std::string raw_line{};
         while(std::getline(infile, raw_line)) {
@@ -67,17 +92,21 @@ public:
         return os;
     }
 
-private:
-    std::ifstream infile{"input.csv"};
-    std::ofstream outfile{"output.csv", std::fstream::out};
+    //Iterator methods for range-based for
+    iterator       begin()  { return std::begin(lines);  }
+    iterator       end()    { return std::end(lines);    }
+    const_iterator cbegin() { return std::cbegin(lines); }
+    const_iterator cend()   { return std::cend(lines);   }
 
+private:
+    std::ifstream infile;
     std::vector<Line> lines{};
 };
 
 int main()
 {
-    Spreadsheet doc;
-    std::cout << doc;
+    Spreadsheet doc{"input.csv"};
 
+    for(auto&& a : doc) std::cout << a << '\n';
     return 0;
 }
