@@ -21,6 +21,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cstdlib>
+#include <iterator>
 
 using cell = std::string;
 class Spreadsheet;
@@ -57,6 +58,9 @@ public:
             // @todo Fix output of names w/ comma
             ss.get();
             std::getline(ss, c, '"');
+
+//            c[c.find(',')] = '_';
+
             cells.push_back("\""s+c+"\""s);
             ss.get();
         }

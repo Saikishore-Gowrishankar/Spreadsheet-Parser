@@ -48,6 +48,7 @@ public:
         for(auto&& line : names_sheet)
         {
             auto company = line[0], project = line[1];
+            //if(auto ch = company.find(','); ch) company[ch] == '_';
 
             // The projects don't all have a company name listed next to them
             // For example, if the company has multiple carriers it only lists the
@@ -55,7 +56,7 @@ public:
             // projects under the same company have a company name listed when 
             // the data is entered into the output file.
             if(company != "") cached_company_name = company;
-            else if(company == "" && project != "") company = cached_company_name;
+            else if(company == "" && project != "") company = line[0] = cached_company_name;
             else if(company == "" && project == "") { outfile << '\n'; continue; }
 
             // The lookup uses the concatenation of the company and the project names
@@ -69,7 +70,7 @@ public:
             }
             else
             {
-                std::cout << "Could not find $^" << company << " - " << project << "^$\n";
+                std::cout << "Could not find:    " << company << " - " << project << "    \n";
                 outfile << company << ',' << project << ',' << "ERR,ERR,ERR,ERR\n";
             }
         }
@@ -82,11 +83,13 @@ private:
 
 int main()
 {
-    std::cout << "Daily QA Sheet generator\n"
+    std::cout << "\nDaily QA Sheet generator\n"
               << "opening names.csv and data.csv\n\n";
 
     DailyQA doc{"names.csv", "data.csv"};
     doc.run();
+
+    std::cout << "\nFinished. Find results in output.csv. Terminating.\n\n";
 
     return 0;
 }
