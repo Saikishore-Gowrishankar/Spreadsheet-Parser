@@ -1,5 +1,6 @@
 #pragma once
 
+/* Standard dependencies */
 #include <fstream>
 #include <string_view>
 #include <string>
@@ -8,6 +9,14 @@
 #include <regex>
 #include <algorithm>
 
+/**
+ * csv
+ *
+ * @class A class that extends std::fstream to preprocess CSV files
+ * as dictated by the RFC 4180 standard. This class performs preprocessing
+ * on all CSV files by removing all double-quotes around fields and replacing
+ * embedded comma characters with an underscore for easier processing.
+ */
 class csv : public std::fstream
 {
 public:
