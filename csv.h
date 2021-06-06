@@ -26,9 +26,8 @@ public:
         //Erase all double quote characters (remove-erase idiom)
         buf_.erase(std::remove(std::begin(buf_), std::end(buf_), '"'), std::end(buf_));
 
-        //Truncate all contents of file and write new contents.
-//        close(); open(s.data(), std::fstream::out | std::fstream::trunc);
-        seekp(0); seekg(0);
+        //Write new contents.
+        close(); open(s.data(), std::fstream::out | std::fstream::in | std::fstream::trunc);
         *this << buf_;
         seekp(0); seekg(0);
     }
