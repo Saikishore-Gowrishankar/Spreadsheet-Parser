@@ -23,6 +23,9 @@
 #include <cstdlib>
 #include <iterator>
 
+/* Local dependencies */
+#include "csv.h"
+
 using cell = std::string;
 class Spreadsheet;
 
@@ -134,11 +137,12 @@ public:
      * @param in The input file name
      *
      **/
-    Spreadsheet(std::string_view in) : infile{in.data()}
+    Spreadsheet(std::string_view in) : infile{in}
     {
         if(!infile) { std::cerr << "could not open file " << in.data() << ". Abort.\n"; std::exit(1); }
 
         std::string raw_line{};
+        infile.seekg(0); infile.seekp(0);
         while(std::getline(infile, raw_line)) lines.push_back(raw_line);
     }
 
@@ -161,6 +165,6 @@ public:
     const_iterator cend()   { return std::cend(lines);   }
 
 private:
-    std::ifstream infile;	//Input file
+    csv infile;			//Input file
     std::vector<Line> lines{};	//Parsed lines
 };
