@@ -61,6 +61,7 @@ public:
 
             // The lookup uses the concatenation of the company and the project names
             auto str = company+project;
+            static int ws_count = 0;
             if(auto search = data_entries.find(str); search != std::end(data_entries) && search->first != "")
             {
                 #define out(x,y) ( (x)[y] == ""? "n/a" : (x)[y]  )
@@ -68,9 +69,10 @@ public:
                         << out(search->second,4) << ',' << out(search->second,6) << ','<< out(search->second,8) << ',' << out(search->second,10) << "\n";
                 #undef out
             }
-            else if(project == "_") { std::cout << "Skipping ws\n"; outfile << '\n';}
+            else if(project == "_") { std::cout << "Skipping ws (" << ++ws_count << ")\n"; outfile << '\n';}
             else
             {
+                ws_count = 0;
                 std::cout << "Could not find:    " << company << " - " << project << "    \n";
                 outfile << company << ',' << project << ',' << "ERR,ERR,ERR,ERR\n";
             }
