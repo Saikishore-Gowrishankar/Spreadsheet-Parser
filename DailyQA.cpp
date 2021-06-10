@@ -31,7 +31,7 @@ public:
      * @param names File name of sheet with projects/companies
      */
     DailyQA(std::string_view names, std::string_view data)
-             : names_sheet{names.data()}, data_sheet{data.data()}
+             : names_sheet{names.data(), false}, data_sheet{data.data(), true}
     {
         // Insert data into a hash map for easy lookup
         for(auto&& line : data_sheet) data_entries.insert({line[0]+line[1], line});
@@ -57,7 +57,7 @@ public:
             // the data is entered into the output file.
             if(company != "") cached_company_name = company;
             else if(company == "" && project != "") company = line[0] = cached_company_name;
-            else if(company == "" && project == "") { outfile << '\n'; continue; }
+            else if(company == "" && project == "_") { outfile << '\n'; continue; }
 
             // The lookup uses the concatenation of the company and the project names
             auto str = company+project;
@@ -68,6 +68,7 @@ public:
                         << out(search->second,4) << ',' << out(search->second,6) << ','<< out(search->second,8) << ',' << out(search->second,10) << "\n";
                 #undef out
             }
+            else if(project == "_") { std::cout << "Skipping ws\n"; outfile << '\n';}
             else
             {
                 std::cout << "Could not find:    " << company << " - " << project << "    \n";

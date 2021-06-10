@@ -30,7 +30,7 @@ public:
     /**
      * @param std::string_view Opens file s
      */
-    csv(std::string_view s) : std::fstream{s.data()}
+    csv(std::string_view s, bool preproc) : std::fstream{s.data()}
     {
         //Regular expressions
         std::regex symbol_with_comma{ R"~("([^"]+)(,)([^"]+)")~" };

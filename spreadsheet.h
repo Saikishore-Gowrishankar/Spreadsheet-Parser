@@ -137,7 +137,7 @@ public:
      * @param in The input file name
      *
      **/
-    Spreadsheet(std::string_view in) : infile{in}
+    Spreadsheet(std::string_view in, bool preproc) : infile{in, preproc}
     {
         if(!infile) { std::cerr << "could not open file " << in.data() << ". Abort.\n"; std::exit(1); }
 
